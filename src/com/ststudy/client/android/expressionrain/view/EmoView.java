@@ -42,8 +42,12 @@ public class EmoView extends ImageView {
         mContainerHeight = pViewGroup.getHeight();
         mPoints[0] = new Random().nextInt(mContainerWidth);
         mPoints[1] = new Random().nextInt(mContainerWidth);
+
+        float _scale = new Random().nextFloat() + 0.5f;
         ValueAnimator animator1 = ValueAnimator.ofObject(new BezierEvaluator(), new PointF(mPoints[0], 0), new PointF(mPoints[1] - 90, mContainerHeight - 90));
         ObjectAnimator animator2 = ObjectAnimator.ofFloat(this, "alpha", 1.0f, 0.0f);
+        ObjectAnimator animator3 = ObjectAnimator.ofFloat(this, "scaleX", 1.0f, _scale);
+        ObjectAnimator animator4 = ObjectAnimator.ofFloat(this, "scaleY", 1.0f, _scale);
         animator1.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
@@ -52,7 +56,6 @@ public class EmoView extends ImageView {
                 EmoView.this.setY(pointF.y);
             }
         });
-
 
         animator2.addListener(new Animator.AnimatorListener() {
             @Override
@@ -77,11 +80,11 @@ public class EmoView extends ImageView {
             }
         });
         AnimatorSet set = new AnimatorSet();
-        set.play(animator1).before(animator2);
+        set.play(animator1).with(animator3).with(animator4).before(animator2);
         animator1.setRepeatMode(ValueAnimator.REVERSE);
         animator1.setDuration(new Random().nextInt(3000) + 2000);
         animator1.setTarget(EmoView.this);
         set.start();
-        setImageResource(R.drawable.flower);
+        setImageResource(R.drawable.gold_icon);
     }
 }

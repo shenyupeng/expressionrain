@@ -5,8 +5,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.view.ViewGroup;
 
-import java.lang.ref.WeakReference;
-
 /**
  * Created by Aaron on 2016/2/4.
  * 显示表情雨管理
@@ -17,7 +15,6 @@ public class ShowEmoViewManager {
     private ViewGroup mViewGroup;
     private int mTime;
     private int mDensity;
-    private MyHandler mHandler;
 
     /**
      * 显示图形构造
@@ -32,8 +29,7 @@ public class ShowEmoViewManager {
         mViewGroup = pViewGroup;
         mTime = pTime;
         mDensity = pDensity;
-        mHandler = new MyHandler(ShowEmoViewManager.this);
-        mHandler.sendEmptyMessageDelayed(1, 1000);
+        handler.sendEmptyMessageDelayed(1, 1000);
     }
 
     private void addEmoView() {
@@ -42,30 +38,22 @@ public class ShowEmoViewManager {
         }
     }
 
-    private static class MyHandler extends Handler {
-        private final WeakReference<ShowEmoViewManager> mShowEmoView;
 
-        public MyHandler(ShowEmoViewManager autoScrollViewPager) {
-            this.mShowEmoView = new WeakReference<ShowEmoViewManager>(autoScrollViewPager);
-        }
-
+    Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             switch (msg.what) {
                 case 1:
-                    ShowEmoViewManager _showEomView = this.mShowEmoView.get();
-                    if (_showEomView != null) {
-                        _showEomView.mHandler.removeMessages(1);
-                        if (_showEomView.mTime > 0) {
-                            _showEomView.addEmoView();
-                            _showEomView.mHandler.sendEmptyMessageDelayed(1, 1000);
-                            _showEomView.mTime--;
-                        }
+                    if (mTime > 0) {
+                        addEmoView();
+                        handler.sendEmptyMessageDelayed(1, 1000);
+                        mTime--;
                     }
-                default:
                     break;
             }
+
         }
-    }
+    };
+
 }
